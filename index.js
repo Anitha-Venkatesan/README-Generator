@@ -52,9 +52,23 @@ inquirer
         name: "email"
     }
   ]).then(function(data) {
+      const readMeDetails = `
+      ${data.GitHubUsername}
+      ${data.GitHubRepoName}
+      ${data.title}
+      ${data.description}
+      ${data.tableOfContent}
+      ${data.installation}
+      ${data.usage}
+      ${data.license}
+      ${data.contibuting}
+      ${data.tests}
+      ${data.profile}
+      ${data.email}
+      `;
 
       
-     fs.writeFile(".utils/generateMarkdown.js", process.argv[2], function(err) {
+     fs.writeFile("utils/generateMarkdown.js", readMeDetails, function(err) {
   
         if (err) {
             return console.log(err);
