@@ -2,12 +2,12 @@ let inquirer = require("inquirer");
 let fs = require("fs");
 let lodash = require('lodash');
 
-function getInstallationSteps(numberOfSteps) {
-  const ranges = lodash.range(Number(numberOfSteps));
-  const prompts = ranges.map((range) => {
+function getInstallationSteps(numberOfInstallationSteps) {
+  const ranges = lodash.range(Number(numberOfInstallationSteps));
+  const installationPrompts = ranges.map((range) => {
     return {
       message: `Enter step number ${range + 1} of installation`,
-      name: `installationStep  ${range + 1}`,
+      name: `installationStep${range + 1}`,
       validate: (input) => {
         if (lodash.isEmpty(input)) {
           return `Please enter installation step ${range + 1}`;
@@ -16,9 +16,27 @@ function getInstallationSteps(numberOfSteps) {
       }
     };
   });
-  return inquirer.prompt(prompts);
+  return inquirer.prompt(installationPrompts);
 }
- inquirer
+
+function getExecutionSteps(numberOfExecutionSteps) {
+  const ranges = lodash.range(Number(numberOfExecutionSteps));
+  const executionPrompts = ranges.map((range) => {
+    return {
+      message: `Enter step number ${range + 1} of Execution`,
+      name: `executionStep${range + 1}`,
+      validate: (input) => {
+        if (lodash.isEmpty(input)) {
+          return `Please enter Execution step ${range + 1}`;
+        }
+        return true;
+      }
+    };
+  });
+  return inquirer.prompt(executionPrompts);
+}
+
+inquirer
   .prompt([
     {
       message: "Enter your GitHub Username?",
@@ -71,7 +89,7 @@ function getInstallationSteps(numberOfSteps) {
         }
     }
   ]).then(function(data) {
-const readMeDetails = `
+  const readMeDetails = `
 ${data.title}
 ## Description
 * ${data.description}
@@ -92,17 +110,59 @@ ${data.title}
   }); 
 
   return getInstallationSteps(data.installation);
-}).then((dataSteps) => {
-   console.log(dataSteps);  
-   for (const finalSteps in dataSteps) 
-  
+}).then((dataInstallationSteps) => {
+   let readMeInstallationSteps = "";
+   for (const finalSteps in dataInstallationSteps) {
+    readMeInstallationSteps += "* ";
+    readMeInstallationSteps += dataInstallationSteps[finalSteps]; 
+    readMeInstallationSteps += "\n";
+  }
    //console.log(`${finalSteps}: ${dataSteps[finalSteps]}`);
-  fs.appendFile("utils/README.md","* " +dataSteps[finalSteps] +"\n", function(err) {
+  fs.appendFile("utils/README.md", readMeInstallationSteps +"\n", function(err) {
     if (err) { 
       return console.log(err);
     }
   }); 
+
+  return inquirer
+    .prompt([
+      {
+          message: "How many steps to execute the application?",
+          name: "usage",
+          validate: (input) => {
+            if (lodash.isEmpty(input)) {
+              return "Please Enter steps to run the application.";
+            }
+            return true;
+          },
+          validate: (input) => {
+            if (isNaN(input)) {
+              return "Please enter number as input.";
+            }
+            return true;
+          }
+      }
+    ]);
+}).then((numberOfExecutionSteps) => {
+  return getExecutionSteps(numberOfExecutionSteps.usage);
+}).then((dataExecutionSteps) => {
+  console.log(dataExecutionSteps);  
+  
+  let readMeExecutionSteps = '### Usage'+"\n"+ "";
+  for (const finalSteps in dataExecutionSteps) {
+    readMeExecutionSteps += "* ";
+    readMeExecutionSteps += dataExecutionSteps[finalSteps]; 
+    readMeExecutionSteps += "\n";
+    
+ }
+  //console.log(`${finalSteps}: ${dataSteps[finalSteps]}`);
+ fs.appendFile("utils/README.md", readMeExecutionSteps +"\n", function(err) {
+   if (err) { 
+     return console.log(err);
+   }
+ }); 
 });
+
 
   
 
