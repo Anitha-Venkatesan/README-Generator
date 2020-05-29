@@ -1,7 +1,7 @@
 let inquirer = require("inquirer");
 let fs = require("fs");
 
-inquirer
+ inquirer
   .prompt([
     {
       message: "Enter your GitHub Username?",
@@ -33,7 +33,7 @@ inquirer
     },
     {
         message: "How many contributors in this project?",
-        name: "contibuting"
+        name: "contibutor"
     },
     {
         message: "Tests?",
@@ -49,34 +49,31 @@ inquirer
     }
   ]).then(function(data) {
       const readMeDetails = `
-## ${data.GitHubUsername}
-## ${data.GitHubRepoName}
+
 ## ${data.title}
 ## Description
 * ${data.description}
 ## Table of Contents 
-    [Installation](Installation)
-    [Usage](Usage)
-    [License](License)
-    [Contributor](Contributor)
-   [Tests](Tests)
-    [Questions](Questions)   
+  [Installation](Installation)<br>
+  [Usage](Usage)<br>
+  [License](License)<br>
+  [Contributor](Contributor)<br>
+  [Tests](Tests)<br>
+  [Questions](Questions)<br>
 ### Installation
-* ${installation()}
+* ${data.installation}
 ### Usage
 * ${data.usage}
 ### License
 * ${data.license}
 ### Contributor
-* ${data.contibuting}
+* ${data.contibutor}
 ### Tests
 * ${data.tests}
 ### Questions
 * ${data.profile}
 * ${data.email}
-            `;
-
-      
+            `;      
      fs.writeFile("utils/README.md", readMeDetails, function(err) {
   
         if (err) {
@@ -100,5 +97,53 @@ inquirer
        }
     } 
   }); 
+
+  const questions = () => {
+    inquirer
+      .prompt([{
+        type: 'list',
+        name: 'options',
+        message: 'Welcome to README Generator',
+        choices: ['GitHubUsername', 'GitHubRepoName', 'title', 'description', 'installation', 'usage','license','contibutor','tests','profile','email']
+      }]).then(questions => {
+        let currentQuestion = Object.keys(values)[0];
+        switch (values.options) {
+          case 'GitHubUsername':
+            GitHubUsername.getGitHubUsername(currentQuestion);
+          case 'GitHubRepoName':
+            GitHubRepoName.getGitHubRepoName(currentQuestion);
+          case 'title':
+            title.getTitle(currentQuestion);
+          case 'description':
+            description.getDescription(currentQuestion);
+          case 'usage':
+            usage.getUsage(currentQuestion);
+          case 'license':
+            license.getLicense(currentQuestion);
+          case 'contibutor':
+              contibutor.getContibutor(currentQuestion);
+          case 'tests':
+              tests.getTests(currentQuestion);
+          case 'profile':
+            profile.getProfile(currentQuestion);
+          case 'email':
+            email.getEmail(currentQuestion);
+            break;
+        }
+      });
+
+      function getGitHubUsername(name) {
+
+        if(data.GitHubUsername === "") {
+          inquirer
+          .prompt([
+              {
+              message: "Enter your GitHub Username?",
+              name: "GitHubUsername"
+              }]);
+          console.log("username");
+        }
+      }
+  }; 
 
   
