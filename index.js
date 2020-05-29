@@ -82,7 +82,7 @@ inquirer
         message: "How many steps in installation?",
         name: "installation",
         validate: (input) => {
-          if (isNaN(input)) {
+          if (isNaN(input) || lodash.isEmpty(input)) {
             return "Please enter number as input.";
           }
           return true;
@@ -114,7 +114,7 @@ ${data.title}
    let readMeInstallationSteps = "";
    for (const finalSteps in dataInstallationSteps) {
     readMeInstallationSteps += "* ";
-    readMeInstallationSteps += dataInstallationSteps[finalSteps]; 
+    readMeInstallationSteps += "`"+dataInstallationSteps[finalSteps]+"`"; 
     readMeInstallationSteps += "\n";
   }
    //console.log(`${finalSteps}: ${dataSteps[finalSteps]}`);
@@ -130,21 +130,15 @@ ${data.title}
           message: "How many steps to execute the application?",
           name: "usage",
           validate: (input) => {
-            if (lodash.isEmpty(input)) {
-              return "Please Enter steps to run the application.";
-            }
-            return true;
-          },
-          validate: (input) => {
-            if (isNaN(input)) {
+            if (isNaN(input) || lodash.isEmpty(input)) {
               return "Please enter number as input.";
             }
             return true;
           }
       }
     ]);
-}).then((numberOfExecutionSteps) => {
-  return getExecutionSteps(numberOfExecutionSteps.usage);
+}).then((data) => {
+  return getExecutionSteps(data.usage);
 }).then((dataExecutionSteps) => {
   console.log(dataExecutionSteps);  
   
@@ -161,6 +155,30 @@ ${data.title}
      return console.log(err);
    }
  }); 
+ return inquirer
+ .prompt([
+  {
+    type: 'list',
+    message: "What is the License name?",
+    name: "license",
+    choices: ['MIT', 'BSD','GPL'],
+    validate: (input) => {
+      if (isNaN(input) || lodash.isEmpty(input)) {
+        return "Please enter number as input.";
+      }
+      return true;
+    }  
+  }
+]).then((licenseData)=>{
+  const license = '### License'+"\n"+licenseData.license;
+  fs.appendFile("utils/README.md", license +"\n", function(err) {
+    if (err) { 
+      return console.log(err);
+    }
+  });
+
+});
+ 
 });
 
 
