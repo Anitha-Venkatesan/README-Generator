@@ -4,10 +4,10 @@ let lodash = require('lodash');
 
 function getInstallationSteps(numberOfSteps) {
   const ranges = lodash.range(Number(numberOfSteps));
-  const promopts = ranges.map((range) => {
+  const prompts = ranges.map((range) => {
     return {
       message: `Enter step number ${range + 1} of installation`,
-      name: `installationStep${range + 1}`,
+      name: `installationStep  ${range + 1}`,
       validate: (input) => {
         if (lodash.isEmpty(input)) {
           return `Please enter installation step ${range + 1}`;
@@ -16,7 +16,7 @@ function getInstallationSteps(numberOfSteps) {
       }
     };
   });
-  return inquirer.prompt(promopts);
+  return inquirer.prompt(prompts);
 }
  inquirer
   .prompt([
@@ -85,16 +85,20 @@ ${data.title}
 ### Installation
 `; 
 
-  fs.writeFile("utils/README.md", readMeDetails, function(err) {
+  fs.writeFileSync("utils/README.md", readMeDetails, function(err) {
     if (err) {
       return console.log(err);
     }
   }); 
 
   return getInstallationSteps(data.installation);
-}).then((data) => {
-  fs.appendFile("utils/README.md", readMeDetails, function(err) {
-    if (err) {
+}).then((dataSteps) => {
+   console.log(dataSteps);  
+   for (const finalSteps in dataSteps) 
+  
+   //console.log(`${finalSteps}: ${dataSteps[finalSteps]}`);
+  fs.appendFile("utils/README.md","* " +dataSteps[finalSteps] +"\n", function(err) {
+    if (err) { 
       return console.log(err);
     }
   }); 
