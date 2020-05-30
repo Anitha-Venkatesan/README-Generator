@@ -35,6 +35,22 @@ function getExecutionSteps(numberOfExecutionSteps) {
   });
   return inquirer.prompt(executionPrompts);
 }
+function getTestSteps(numberOfTestSteps) {
+  const ranges = lodash.range(Number(numberOfTestSteps));
+  const testPrompts = ranges.map((range) => {
+    return {
+      message: `Enter step number ${range + 1} of Tests`,
+      name: `testSteps${range + 1}`,
+      validate: (input) => {
+        if (lodash.isEmpty(input)) {
+          return `Please enter test step ${range + 1}`;
+        }
+        return true;
+      }
+    };
+  });
+  return inquirer.prompt(testPrompts);
+}
 
 inquirer
   .prompt([
@@ -181,4 +197,32 @@ ${data.title}
       return console.log(err);
     }
   });
+  return inquirer
+    .prompt([
+      {
+          message: "How many steps for the Tests?",
+          name: "tests",
+          validate: (input) => {
+            if (isNaN(input) || lodash.isEmpty(input)) {
+              return "Please enter number as input.";
+            }
+            return true;
+          }
+      }
+    ]);
+}).then((dataTestSteps) => {
+  return getTestSteps(dataTestSteps.tests);
+}).then((dataTestSteps) => {
+  let readMeTestSteps = "\n"+'### Tests'+"\n"+ "";
+  for (const finalSteps in dataTestSteps) {
+    readMeTestSteps += "* ";
+    readMeTestSteps += dataTestSteps[finalSteps]; 
+    readMeTestSteps += "\n";
+    
+ }
+ fs.appendFile("utils/README.md", readMeTestSteps +"\n", function(err) {
+  if (err) { 
+    return console.log(err);
+  }
+}); 
 });
