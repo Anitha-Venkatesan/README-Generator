@@ -140,8 +140,6 @@ ${data.title}
 }).then((data) => {
   return getExecutionSteps(data.usage);
 }).then((dataExecutionSteps) => {
-  console.log(dataExecutionSteps);  
-  
   let readMeExecutionSteps = '### Usage'+"\n"+ "";
   for (const finalSteps in dataExecutionSteps) {
     readMeExecutionSteps += "* ";
@@ -149,15 +147,12 @@ ${data.title}
     readMeExecutionSteps += "\n";
     
  }
-  //console.log(`${finalSteps}: ${dataSteps[finalSteps]}`);
  fs.appendFile("utils/README.md", readMeExecutionSteps +"\n", function(err) {
    if (err) { 
      return console.log(err);
    }
  }); 
- return inquirer
- .prompt([
-  {
+ return inquirer.prompt([{
     type: 'list',
     message: "What is the License name?",
     name: "license",
@@ -168,47 +163,22 @@ ${data.title}
       }
       return true;
     }  
-  }
-]).then((licenseData)=>{
-  const license = '### License'+"\n"+ "* " +licenseData.license;
-  fs.appendFile("utils/README.md", license +"\n", function(err) {
+  }]);
+}).then((licenseData)=>{
+  const content = [
+    '### License',
+    licenseData.license,
+    '### Contributing',
+    '* Fork the Repository',
+    '* Clone the repository using git clone', 
+    '* Implement your code',
+    '* Create a PR', 
+    '* Onece approved,it will merge to master'
+  ];
+
+  fs.appendFile("utils/README.md", content.join('\n'), function(err) {
     if (err) { 
       return console.log(err);
     }
   });
-
-
-return inquirer
- .prompt([
-  {
-    type: 'list',
-    message: "Name the contributors in this project?",
-    name: "contibutor",
-    choices: ['Anitha', 'Mathi', 'Anand', 'Shivu', 'Pato'],
-    validate: (input) => {
-      if (isNaN(input) || lodash.isEmpty(input)) {
-        return "Please enter number as input.";
-      }
-      return true;
-    }  
-  }
-]).then((contributorData)=>{
-  const contibutor = '### Contributor'+"\n"+ "* "+contributorData.contibutor;
-  fs.appendFile("utils/README.md", contibutor +"\n", function(err) {
-    if (err) { 
-      return console.log(err);
-    }
-  });
-
 });
-});
- 
-});
-
-
-  
-
-      
-  
-
-  
