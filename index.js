@@ -2,12 +2,13 @@ let inquirer = require("inquirer");
 let fs = require("fs");
 let lodash = require('lodash');
 const axios = require("axios");
+const apis = require('./utils/axiosGitHubApi');
 
 inquirer
   .prompt([
     {
       message: "Enter your GitHub Username?",
-      name: "GitHubUsername",
+      name: "gitHubUsername",
       validate: (input) => {
         if (lodash.isEmpty(input)) {
           return "Github username is required.";
@@ -16,30 +17,24 @@ inquirer
       }
     },
     {
-      message: "Enter your Email id?",
-      name: "Emailid",
+      message: "Enter your GitHub Email?",
+      name: "GitHubEmail",
       validate: (input) => {
         if (lodash.isEmpty(input)) {
-          return "Email id is required.";
+          return "Github email is required.";
         }
         return true;
       }
     },
     {
       message: "Enter your GitHub Repository name?",
-      name: "GitHubRepoName",
+      name: "gitHubRepoName",
       validate: (input) => {
         if (lodash.isEmpty(input)) {
           return "Github Repository name  is required.";
         }
         return true;
       }
-    },
-    {
-      message: "what is the GitHub url to your project?",
-      name: "url",
-      default :"GitHub Url"
-      
     },
     {
       message: "What is the title of the project?",
@@ -69,8 +64,35 @@ inquirer
       message: "What command should be used to run the tests?",
       name: "tests",
       default:"npm run test"
-    }          
-  ]).then(function(data) {
+    },
+    {
+      type: 'list',
+      message: "What is the license used in this project?",
+      name: "license",
+      choices: ['MIT', 'BSL','GPL'],
+    }         
+  ]).then(async function(data) {
+    
+    let licenseContent = `[${data.license}]`;
+    if (licenseContent === 'MIT') {
+      licenseContent += '(https://choosealicense.com/licenses/mit/)';
+    } else if (licenseContent === 'BSL'){
+      licenseContent += '(https://choosealicense.com/licenses/bsl-1.0/)';
+    } else if(licenseContent === 'GPL') {
+      licenseContent += '(https://choosealicense.com/licenses/gpl-3.0/)';
+    }else {
+      licenseContent += '(https://choosealicense.com/licenses/mit/)';
+    }
+
+    const profile = await apis.getGitHubProfile(data.gitHubUsername);
+    const repo = await apis.getGitHubRepo(data.gitHubUsername,data.gitHubRepoName)
+  
+
+    const content = [ 
+      '### License',
+      '* This program is licensed under the ' +licenseContent +' license.' 
+    ];
+
   const readMeDetails = `
 # ${data.title}
 ![badmath](https://img.shields.io/github/languages/top/nielsenjared/badmath)
@@ -97,43 +119,19 @@ inquirer
 * Once approved, it will merge to master.
 ### Tests 
 * \`${data.tests}\` \n
-`; 
+${content.join('\n')}
+### Questions
+* If you have any questions, Please feel free to contact me [${profile.name}](${profile.html_url}) on my email ${data.GitHubEmail}\n
+* You can also create [issues](${repo.html_url}/issues) on my repo.
+\n ![My profile image](${profile.avatar_url}&s=200)
+`;
+
+
   fs.writeFileSync("utils/README.md", readMeDetails, function(err) {
     if (err) {
       return console.log(err);
     }
-  }); 
- return inquirer.prompt([{
-    type: 'list',
-    message: "What is the license used in this project?",
-    name: "license",
-    choices: ['MIT', 'BSL','GPL'],
-  }]);  
-  }).then((licenseData)=>{
-  let licenseContent = `[${licenseData.license}]`;
-  if (licenseContent === 'MIT') {
-    licenseContent += '(https://choosealicense.com/licenses/mit/)';
-  } else if (licenseContent === 'BSL'){
-    licenseContent += '(https://choosealicense.com/licenses/bsl-1.0/)';
-  } else if(licenseContent === 'GPL') {
-    licenseContent += '(https://choosealicense.com/licenses/gpl-3.0/)';
-  }else {
-    licenseContent += '(https://choosealicense.com/licenses/mit/)';
-  }
-  const content = [ 
-    '### License',
-    '* This program is licensed under the ' +licenseContent +' license.' 
-  ];
-  fs.appendFile("utils/README.md", content.join('\n'), function(err) {
-    if (err) { 
-      return console.log(err);
-    }
   });
-  });
-  
-    
-
-  '### Questions',
-    'If you have any questions,Please contact me'+gitHubUsername ,
-     'to my email'+email 
+ 
+});
   
