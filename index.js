@@ -124,7 +124,7 @@ inquirer
       return console.log(err);
     }
   }); 
-
+//Added editor for usage content
   return inquirer
     .prompt([
       {
