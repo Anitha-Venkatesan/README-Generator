@@ -19,22 +19,6 @@ function getInstallationSteps(numberOfInstallationSteps) {
   return inquirer.prompt(installationPrompts);
 }
 
-function getExecutionSteps(numberOfExecutionSteps) {
-  const ranges = lodash.range(Number(numberOfExecutionSteps));
-  const executionPrompts = ranges.map((range) => {
-    return {
-      message: `Enter step number ${range + 1} of Execution`,
-      name: `executionStep${range + 1}`,
-      validate: (input) => {
-        if (lodash.isEmpty(input)) {
-          return `Please enter Execution step ${range + 1}`;
-        }
-        return true;
-      }
-    };
-  });
-  return inquirer.prompt(executionPrompts);
-}
 function getTestSteps(numberOfTestSteps) {
   const ranges = lodash.range(Number(numberOfTestSteps));
   const testPrompts = ranges.map((range) => {
@@ -144,27 +128,14 @@ inquirer
   return inquirer
     .prompt([
       {
-          message: "How many steps to execute the application?",
+          type: "editor",
+          message: "Type your usage content in the editor",
           name: "usage",
-          validate: (input) => {
-            if (isNaN(input) || lodash.isEmpty(input)) {
-              return "Please enter number as input.";
-            }
-            return true;
-          }
       }
     ]);
-}).then((data) => {
-  return getExecutionSteps(data.usage);
-}).then((dataExecutionSteps) => {
-  let readMeExecutionSteps = '### Usage'+"\n"+ "";
-  for (const finalSteps in dataExecutionSteps) {
-    readMeExecutionSteps += "* ";
-    readMeExecutionSteps += dataExecutionSteps[finalSteps]; 
-    readMeExecutionSteps += "\n";
-    
- }
- fs.appendFile("utils/README.md", readMeExecutionSteps +"\n", function(err) {
+}).then((dataUsage) => {
+  let usage = "### Usage" + "\n" +"* " +dataUsage.usage;
+ fs.appendFile("utils/README.md", usage +"\n", function(err) {
    if (err) { 
      return console.log(err);
    }
@@ -173,7 +144,7 @@ inquirer
     type: 'list',
     message: "What is the License name?",
     name: "license",
-    choices: ['MIT', 'BSD','GPL'],
+    choices: ['MIT', 'BSL','GPL'],
     validate: (input) => {
       if (isNaN(input) || lodash.isEmpty(input)) {
         return "Please enter number as input.";
@@ -182,15 +153,24 @@ inquirer
     }  
   }]);
 }).then((licenseData)=>{
+  let licenseContent = `[${licenseData.license}]`;
+  if (licenseContent === 'MIT') {
+    licenseContent += '(https://choosealicense.com/licenses/mit/)';
+  } else if (licenseContent === 'BSD'){
+    licenseContent += '(https://choosealicense.com/licenses/bsl-1.0/)';
+  } else {
+    licenseContent += '(https://choosealicense.com/licenses/gpl-3.0/)';
+  }
+
   const content = [
     '### License',
-    licenseData.license,
+    '* ' +licenseContent,
     '### Contributing',
-    '* Fork the Repository',
+    '* Fork the repository',
     '* Clone the repository using git clone', 
     '* Implement your code',
     '* Create a PR', 
-    '* Onece approved,it will merge to master'
+    '* Once approved, it will merge to master'
   ];
 
   fs.appendFile("utils/README.md", content.join('\n'), function(err) {
