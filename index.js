@@ -1,57 +1,8 @@
 let inquirer = require("inquirer");
 let fs = require("fs");
 let lodash = require('lodash');
+const axios = require("axios");
 
-
-function getInstallationSteps(numberOfInstallationSteps) {
-  const ranges = lodash.range(Number(numberOfInstallationSteps));
-  const installationPrompts = ranges.map((range) => {
-    return {
-      message: `Enter step number ${range + 1} of installation`,
-      name: `installationStep${range + 1}`,
-      validate: (input) => {
-        if (lodash.isEmpty(input)) {
-          return `Please enter installation step ${range + 1}`;
-        }
-        return true;
-      }
-    };
-  });
-  return inquirer.prompt(installationPrompts);
-}
-function getTestSteps(numberOfTestSteps) {
-  const ranges = lodash.range(Number(numberOfTestSteps));
-  const testPrompts = ranges.map((range) => {
-    return {
-      message: `Enter step number ${range + 1} of Tests`,
-      name: `testSteps${range + 1}`,
-      validate: (input) => {
-        if (lodash.isEmpty(input)) {
-          return `Please enter test step ${range + 1}`;
-        }
-        return true;
-      }
-    };
-  });
-  return inquirer.prompt(testPrompts);
-}
-function getQuestions(numberOfQuestions) {
-  const ranges = lodash.range(Number(numberOfQuestions));
-  const questionPrompts = ranges.map((range) => {
-    return {
-      message: `Enter question number ${range + 1} `,
-      name: `question${range + 1}`,
-      validate: (input) => {
-        if (lodash.isEmpty(input)) {
-          return `Please enter question ${range + 1}`;
-        }
-        return true;
-      }
-      
-    };
-  });
-  return inquirer.prompt(questionPrompts);
-}
 inquirer
   .prompt([
     {
@@ -65,221 +16,124 @@ inquirer
       }
     },
     {
+      message: "Enter your Email id?",
+      name: "Emailid",
+      validate: (input) => {
+        if (lodash.isEmpty(input)) {
+          return "Email id is required.";
+        }
+        return true;
+      }
+    },
+    {
       message: "Enter your GitHub Repository name?",
       name: "GitHubRepoName",
       validate: (input) => {
         if (lodash.isEmpty(input)) {
-          return "Github username is required.";
+          return "Github Repository name  is required.";
         }
         return true;
       }
+    },
+    {
+      message: "what is the GitHub url to your project?",
+      name: "url",
+      default :"GitHub Url"
+      
     },
     {
       message: "What is the title of the project?",
       name: "title",
-      validate: (input) => {
-        if (lodash.isEmpty(input)) {
-          return "Title is required.";
-        }
-        return true;
-      }
+      default :"Project title"
+      
     },
     {
         message: "Write Description about the project?",
         name: "description",
-        validate: (input) => {
-          if (lodash.isEmpty(input)) {
-            return "Description is required.";
-          }
-          return true;
-        }
+        default :"Project description"
+        
+    },
+    
+    {
+        message: "What command should be used to install npm packages ?",
+        name: "installation",
+        default : "npm i"
     },
     {
-        message: "How many steps in installation?",
-        name: "installation",
-        validate: (input) => {
-          if (isNaN(input) || lodash.isEmpty(input)) {
-            return "Please enter number as input.";
-          }
-          return true;
-        }
-    }
+        type: "input",
+        message: "What should the user needs to know about the project?",
+        name: "usage",
+    },
+    {
+      type: "input",
+      message: "What command should be used to run the tests?",
+      name: "tests",
+      default:"npm run test"
+    }          
   ]).then(function(data) {
   const readMeDetails = `
 # ${data.title}
 ![badmath](https://img.shields.io/github/languages/top/nielsenjared/badmath)
+[![npm version](https://badge.fury.io/js/cli.svg)](https://badge.fury.io/js/cli)
+[![npm version](https://badge.fury.io/js/lodash.svg)](https://badge.fury.io/js/lodash)
 ## Description
 * ${data.description}
 ## Table of Contents 
-  [Installation](#installation)<br>
-  [Usage](#usage)<br>
-  [License](#license)<br>
-  [Contributing](#contributing)<br>
-  [Tests](#tests)<br>
-  [Questions](#questions)<br>
+    \n 1. [Installation](#installation)
+    \n 2. [Usage](#usage)
+    \n 3. [Contributing](#contributing)
+    \n 4. [License](#license)
+    \n 5. [Tests](#tests)
+    \n 6. [Questions](#questions)
 ### Installation
+* \`${data.installation}\` \n
+### Usage
+* ${data.usage} \n
+### Contributing \n
+* Fork the repository,
+* Clone the repository using git clone, 
+* Implement your code,
+* Create a Pull Request, 
+* Once approved, it will merge to master.
+### Tests 
+* \`${data.tests}\` \n
 `; 
   fs.writeFileSync("utils/README.md", readMeDetails, function(err) {
     if (err) {
       return console.log(err);
     }
   }); 
-  return getInstallationSteps(data.installation);
-}).then((dataInstallationSteps) => {
-   let readMeInstallationSteps = "";
-   for (const finalSteps in dataInstallationSteps) {
-    readMeInstallationSteps += "* ";
-    readMeInstallationSteps += "`"+dataInstallationSteps[finalSteps]+"`"; 
-    readMeInstallationSteps += "\n";
-  }
-  fs.appendFile("utils/README.md", readMeInstallationSteps +"\n", function(err) {
-    if (err) { 
-      return console.log(err);
-    }
-  }); 
-//Added editor for usage content
-  return inquirer
-    .prompt([
-      {
-          type: "editor",
-          message: "Type your usage content in the editor",
-          name: "usage",
-      }
-    ]);
-}).then((dataUsage) => {
-  let usage = "### Usage" + "\n" +"* " +dataUsage.usage;
- fs.appendFile("utils/README.md", usage +"\n", function(err) {
-   if (err) { 
-     return console.log(err);
-   }
- }); 
  return inquirer.prompt([{
     type: 'list',
-    message: "What is the License name?",
+    message: "What is the license used in this project?",
     name: "license",
     choices: ['MIT', 'BSL','GPL'],
-    validate: (input) => {
-      if (isNaN(input) || lodash.isEmpty(input)) {
-        return "Please enter number as input.";
-      }
-      return true;
-    }  
-  }]);
-}).then((licenseData)=>{
+  }]);  
+  }).then((licenseData)=>{
   let licenseContent = `[${licenseData.license}]`;
   if (licenseContent === 'MIT') {
     licenseContent += '(https://choosealicense.com/licenses/mit/)';
-  } else if (licenseContent === 'BSD'){
+  } else if (licenseContent === 'BSL'){
     licenseContent += '(https://choosealicense.com/licenses/bsl-1.0/)';
-  } else {
+  } else if(licenseContent === 'GPL') {
     licenseContent += '(https://choosealicense.com/licenses/gpl-3.0/)';
+  }else {
+    licenseContent += '(https://choosealicense.com/licenses/mit/)';
   }
-  const content = [
+  const content = [ 
     '### License',
-    '* This program is licensed under the ' +licenseContent +' license.',
-    '### Contributing',
-    '* Fork the repository',
-    '* Clone the repository using git clone', 
-    '* Implement your code',
-    '* Create a PR', 
-    '* Once approved, it will merge to master'
+    '* This program is licensed under the ' +licenseContent +' license.' 
   ];
   fs.appendFile("utils/README.md", content.join('\n'), function(err) {
     if (err) { 
       return console.log(err);
     }
   });
-  return inquirer
-    .prompt([
-      {
-          message: "How many steps for the Tests?",
-          name: "tests",
-          validate: (input) => {
-            if (isNaN(input) || lodash.isEmpty(input)) {
-              return "Please enter number as input.";
-            }
-            return true;
-          }
-      }
-    ]);
-}).then((dataTestSteps) => {
-  return getTestSteps(dataTestSteps.tests);
-}).then((dataTestSteps) => {
-  let readMeTestSteps = "\n"+'### Tests'+"\n"+ "";
-  for (const finalSteps in dataTestSteps) {
-    readMeTestSteps += "* ";
-    readMeTestSteps += dataTestSteps[finalSteps]; 
-    readMeTestSteps += "\n";
+  });
+  
     
- }
- fs.appendFile("utils/README.md", readMeTestSteps +"\n", function(err) {
-  if (err) { 
-    return console.log(err);
-  }
-});
-return inquirer
-    .prompt([
-      {
-          message: "Type your questions 1 or 2 or 3",
-          name: "questions",
-      }
-    ]);
-}).then((dataQuestions) => {
-  return getQuestions(dataQuestions.questions);
-}).then((dataQuestions) => {
-  console.log(dataQuestions);
-  let readMeQuestions = "\n"+'##### Questions :';
-  for (const finalQuestions in dataQuestions) {
-    readMeQuestions += "* ";
-    readMeQuestions += dataQuestions[finalQuestions]; 
-    readMeQuestions += "\n";  
- }
- fs.appendFile("utils/README.md", readMeQuestions +"\n", function(err) {
-  if (err) { 
-    return console.log(err);
-  }
 
-/* const questions = "### Questions";
-const gitapiUrl ='https://avatars.githubusercontent.com/'+ GitHubUsername;
- */
-    
-});
-  return inquirer
-    .prompt([
-      {
-          message: "Enter your answer",
-          name: "answers",
-      }
-    ]);
-}).then((dataAnswers) => { 
- return getQuestions(dataAnswers.answers);
-}).then((dataQuestions) => {
-  console.log(dataQuestions);
-  let answer = "\n" + "##### Answer :" +dataAnswers.answers;
-  for (const finalQuestions in dataQuestions) {
-    readMeQuestions += "* ";
-    readMeQuestions += dataQuestions[finalQuestions]; 
-    readMeQuestions += "\n";  
- }
- fs.appendFile("utils/README.md", readMeQuestions +"\n", function(err) {
-  if (err) { 
-    return console.log(err);
-  }
-/*}).then((dataAnswers) => {
-  console.log(dataAnswers);
-  let readMeAnswers = "\n"+'### Questions'+"\n"+ "";
-  for (const finalAnswers in dataAnswers) {
-    readMeQuestions += "* ";
-    readMeQuestions += dataQuestions[finalQuestions]; 
-    readMeQuestions += "\n";  
- }*/
- fs.appendFile("utils/README.md", answer +"\n", function(err) {
-  if (err) { 
-    return console.log(err);
-  }
-});
- 
-
-});
-
-
+  '### Questions',
+    'If you have any questions,Please contact me'+gitHubUsername ,
+     'to my email'+email 
+  
