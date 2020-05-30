@@ -106,16 +106,17 @@ inquirer
     }
   ]).then(function(data) {
   const readMeDetails = `
-${data.title}
+# ${data.title}
+![badmath](https://img.shields.io/github/languages/top/nielsenjared/badmath)
 ## Description
 * ${data.description}
 ## Table of Contents 
-  [Installation](Installation)<br>
-  [Usage](Usage)<br>
-  [License](License)<br>
-  [Contributor](Contributor)<br>
-  [Tests](Tests)<br>
-  [Questions](Questions)<br>
+  [Installation](#installation)<br>
+  [Usage](#usage)<br>
+  [License](#license)<br>
+  [Contributing](#contributing)<br>
+  [Tests](#tests)<br>
+  [Questions](#questions)<br>
 ### Installation
 `; 
 
@@ -225,4 +226,22 @@ ${data.title}
     return console.log(err);
   }
 }); 
+return inquirer
+    .prompt([
+      {
+          type:"list",
+          message: "Any other Questions?",
+          name: "questions",
+          choices :["What is your gitHub Profile Picture?","What is your gitHub Email?"],
+          validate: (input) => {
+            if (isNaN(input) || lodash.isEmpty(input)) {
+              return "Please enter number as input.";
+            }
+            return true;
+          }
+      }
+    ]);
+
+
+
 });
