@@ -2,6 +2,7 @@ let inquirer = require("inquirer");
 let fs = require("fs");
 let lodash = require('lodash');
 
+
 function getInstallationSteps(numberOfInstallationSteps) {
   const ranges = lodash.range(Number(numberOfInstallationSteps));
   const installationPrompts = ranges.map((range) => {
@@ -18,7 +19,6 @@ function getInstallationSteps(numberOfInstallationSteps) {
   });
   return inquirer.prompt(installationPrompts);
 }
-
 function getTestSteps(numberOfTestSteps) {
   const ranges = lodash.range(Number(numberOfTestSteps));
   const testPrompts = ranges.map((range) => {
@@ -35,7 +35,23 @@ function getTestSteps(numberOfTestSteps) {
   });
   return inquirer.prompt(testPrompts);
 }
-
+function getQuestions(numberOfQuestions) {
+  const ranges = lodash.range(Number(numberOfQuestions));
+  const questionPrompts = ranges.map((range) => {
+    return {
+      message: `Enter question number ${range + 1} `,
+      name: `question${range + 1}`,
+      validate: (input) => {
+        if (lodash.isEmpty(input)) {
+          return `Please enter question ${range + 1}`;
+        }
+        return true;
+      }
+      
+    };
+  });
+  return inquirer.prompt(questionPrompts);
+}
 inquirer
   .prompt([
     {
@@ -103,13 +119,11 @@ inquirer
   [Questions](#questions)<br>
 ### Installation
 `; 
-
   fs.writeFileSync("utils/README.md", readMeDetails, function(err) {
     if (err) {
       return console.log(err);
     }
   }); 
-
   return getInstallationSteps(data.installation);
 }).then((dataInstallationSteps) => {
    let readMeInstallationSteps = "";
@@ -118,7 +132,6 @@ inquirer
     readMeInstallationSteps += "`"+dataInstallationSteps[finalSteps]+"`"; 
     readMeInstallationSteps += "\n";
   }
-   //console.log(`${finalSteps}: ${dataSteps[finalSteps]}`);
   fs.appendFile("utils/README.md", readMeInstallationSteps +"\n", function(err) {
     if (err) { 
       return console.log(err);
@@ -161,10 +174,9 @@ inquirer
   } else {
     licenseContent += '(https://choosealicense.com/licenses/gpl-3.0/)';
   }
-
   const content = [
     '### License',
-    '* ' +licenseContent,
+    '* This program is licensed under the ' +licenseContent +' license.',
     '### Contributing',
     '* Fork the repository',
     '* Clone the repository using git clone', 
@@ -172,7 +184,6 @@ inquirer
     '* Create a PR', 
     '* Once approved, it will merge to master'
   ];
-
   fs.appendFile("utils/README.md", content.join('\n'), function(err) {
     if (err) { 
       return console.log(err);
@@ -205,23 +216,70 @@ inquirer
   if (err) { 
     return console.log(err);
   }
-}); 
+});
 return inquirer
     .prompt([
       {
-          type:"list",
-          message: "Any other Questions?",
+          message: "Type your questions 1 or 2 or 3",
           name: "questions",
-          choices :["What is your gitHub Profile Picture?","What is your gitHub Email?"],
-          validate: (input) => {
-            if (isNaN(input) || lodash.isEmpty(input)) {
-              return "Please enter number as input.";
-            }
-            return true;
-          }
       }
     ]);
+}).then((dataQuestions) => {
+  return getQuestions(dataQuestions.questions);
+}).then((dataQuestions) => {
+  console.log(dataQuestions);
+  let readMeQuestions = "\n"+'##### Questions :';
+  for (const finalQuestions in dataQuestions) {
+    readMeQuestions += "* ";
+    readMeQuestions += dataQuestions[finalQuestions]; 
+    readMeQuestions += "\n";  
+ }
+ fs.appendFile("utils/README.md", readMeQuestions +"\n", function(err) {
+  if (err) { 
+    return console.log(err);
+  }
 
-
+/* const questions = "### Questions";
+const gitapiUrl ='https://avatars.githubusercontent.com/'+ GitHubUsername;
+ */
+    
+});
+  return inquirer
+    .prompt([
+      {
+          message: "Enter your answer",
+          name: "answers",
+      }
+    ]);
+}).then((dataAnswers) => { 
+ return getQuestions(dataAnswers.answers);
+}).then((dataQuestions) => {
+  console.log(dataQuestions);
+  let answer = "\n" + "##### Answer :" +dataAnswers.answers;
+  for (const finalQuestions in dataQuestions) {
+    readMeQuestions += "* ";
+    readMeQuestions += dataQuestions[finalQuestions]; 
+    readMeQuestions += "\n";  
+ }
+ fs.appendFile("utils/README.md", readMeQuestions +"\n", function(err) {
+  if (err) { 
+    return console.log(err);
+  }
+/*}).then((dataAnswers) => {
+  console.log(dataAnswers);
+  let readMeAnswers = "\n"+'### Questions'+"\n"+ "";
+  for (const finalAnswers in dataAnswers) {
+    readMeQuestions += "* ";
+    readMeQuestions += dataQuestions[finalQuestions]; 
+    readMeQuestions += "\n";  
+ }*/
+ fs.appendFile("utils/README.md", answer +"\n", function(err) {
+  if (err) { 
+    return console.log(err);
+  }
+});
+ 
 
 });
+
+
