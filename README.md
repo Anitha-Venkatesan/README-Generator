@@ -10,15 +10,17 @@
 * Used GitHub APIs to get the profile picture, repository name ,repository issues link and email id    
  
 ### Installation
-Steps to install the dependencies for the node npm packages
-* `npm init` 
+Steps to install the node npm packages 
 * `npm i`
-* `npm i lodash`
-* `npm i axios`
-* `npm i inquirer`
+
+### Dependencies
+* lodash
+* axios
+* inquirer
+
+Note: They already included in npm package.json
 
 ### Usage
-* 
 * git clone `git@github.com:Anitha-Venkatesan/README-Generator.git`
 * `cd README-Generator`
 * Open index.js in Command Line Terminal using the command `node index.js`
@@ -35,9 +37,9 @@ Steps to install the dependencies for the node npm packages
 * https://api.github.com/users/Anitha-Venkatesan
 * https://api.github.com/repos/Anitha-Venkatesan/README-Generator
 
-
 ### Issues
-* Have my email id added on the GitHub acccount, But when getting email through the axios API call, it is showing "null" 
+* Have my email id added on the GitHub acccount, But when getting email through the axios API call, it is showing "null" .
+So promoted user email id through command line terminal.
 Below is the screenshot for the reference :
 ![](EmailNull.png)
 
