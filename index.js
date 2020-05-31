@@ -8,6 +8,10 @@ const apis = require('./utils/axiosGitHubApi');
 inquirer
   .prompt([
     {
+      message: "Generating README using Command Line Interface",
+      name:"readme"
+    },
+    {
       message: "Enter your GitHub Username?",
       name: "gitHubUsername",
       validate: (input) => {
@@ -56,7 +60,7 @@ inquirer
     },
     {
         type: "input",
-        message: "What should the user needs to know about the project?",
+        message: "What is the command to run the application?",
         name: "usage",
     },
     {

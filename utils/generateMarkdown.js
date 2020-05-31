@@ -33,7 +33,7 @@ function generateMarkdown(data, profile, repo) {
 ### Installation
 * \`${data.installation}\` \n
 ### Usage
-* ${data.usage} \n
+* \`${data.usage}\` \n
 ### Contributing \n
 * Fork the repository,
 * Clone the repository using git clone, 
