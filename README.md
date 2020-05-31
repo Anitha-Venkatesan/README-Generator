@@ -7,18 +7,7 @@
 * A command line application that dynamically generates a Readme.md file using user input
 * Getting GitHub infomation such as name,repository name and email to generate the readme for the user for a project
 * Installing npm packages for node dependencies such as inquirer for prompting user input 
-* Used GitHub APIs to get the profile picture, repository name ,repository issues link and email id
-
-## Table of Contents 
-    
- 1. [Installation](#installation)
-    
- 2. [Usage](#usage)
-    
- 3. [Contributing](#contributing)
-    
- 4. [Tests](#tests)
-    
+* Used GitHub APIs to get the profile picture, repository name ,repository issues link and email id    
  
 ### Installation
 Steps to install the dependencies for the node npm packages
@@ -35,11 +24,12 @@ Steps to install the dependencies for the node npm packages
 * Open index.js in Command Line Terminal using the command `node index.js`
 
 ## Screenshots 
-* [Preview README](https://github.com/Anitha-Venkatesan/README-Generator/blob/master/Screenshots/PreviewReadme.png)
-* [Generated README](https://github.com/Anitha-Venkatesan/README-Generator/blob/master/Screenshots/readmescreenshot.png)
+* ![Preview README](Screenshots/PreviewReadme.png)
+
+* ![Generated README](Screenshots/readmescreenshot.png)
 
 ## Demo Link
-* [DEMO](https://github.com/Anitha-Venkatesan/README-Generator/blob/master/Screenshots/Demolink.mov)
+* [DEMO](Screenshots/Demolink.mov)
 
 ### APIS used 
 * https://api.github.com/users/Anitha-Venkatesan
@@ -49,7 +39,7 @@ Steps to install the dependencies for the node npm packages
 ### Issues
 * Have my email id added on the GitHub acccount, But when getting email through the axios API call, it is showing "null" 
 Below is the screenshot for the reference :
-EmailNull.png
+![](EmailNull.png)
 
 
             
