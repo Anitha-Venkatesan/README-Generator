@@ -6,6 +6,8 @@
 ## Description
 * A command line application that dynamically generates a Readme.md file using user input
 * Getting GitHub infomation such as name,repository name and email to generate the readme for the user for a project
+* Used node dependencies inquirer for prompting user input 
+* Used GitHub APIs to get the profile picture and repository link for issues and email id
 
 ## Table of Contents 
     
@@ -15,7 +17,7 @@
     
  3. [Contributing](#contributing)
     
- 4.[Tests](#tests)
+ 4. [Tests](#tests)
     
  
 ### Installation
@@ -42,10 +44,14 @@ Steps to install the dependencies for the node npm packages
 * Create a Pull Request, 
 * Once approved, it will merge to master.
 
-### Tests 
-For testing automation code ,we need the below command 
+### APIS used 
+* https://api.github.com/users/Anitha-Venkatesan
+* https://api.github.com/repos/Anitha-Venkatesan/README-Generator
 
-* `npm run test` 
+
+### Issues
+* Have my emailid added on the GitHub acccount, But when getting email through the axios API call,it is showing "null" 
+Below is the screenshot for the reference :
 
 
             
