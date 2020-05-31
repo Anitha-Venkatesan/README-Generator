@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/Anitha-Venkatesan/README-Generator#readme",
   "dependencies": {
-    "inquirer": "^7.1.0"
-  }
+    "axios": "^0.19.2",
+    "inquirer": "^7.1.0",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {}
 }
