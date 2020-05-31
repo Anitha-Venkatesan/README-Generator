@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/cli.svg)](https://badge.fury.io/js/cli)
 [![npm version](https://badge.fury.io/js/lodash.svg)](https://badge.fury.io/js/lodash)
 ## Description
-* A command line application that dynamically generates a README.md file from the user input
+* A command line application that dynamically generates a Readme.md file using user input
 ## Table of Contents 
     
  1. [Installation](#installation)
@@ -19,7 +19,7 @@
     
  6. [Questions](#questions)
 ### Installation
-* `npm i ` 
+* `npm i` 
 
 ### Usage
 * `node index.js` 
